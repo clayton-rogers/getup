@@ -15,7 +15,7 @@ enum class CPU_SPEED {
 void set_cpu_speed(CPU_SPEED speed){
   // NOTE: assumes clock is running at internal 8Mhz
   #if !(F_CPU == 8000000L)
-  #error "This code only works on 8MHz processor"
+  error "This code only works on 8MHz processor"
   #endif
 
   
@@ -53,23 +53,26 @@ void setAllPullup() {
   }
 }
 
-
+void disableADC() {
+  ADCSRA = 0x00; // zero out adc status reg A to disable ACD
+  PRR = 0x01; // write 1 to ADC to shut down acd
+}
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   setAllPullup();
+  disableADC();
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
   
   set_cpu_speed(CPU_SPEED::ONE_MHz);
+  //set_cpu_speed(CPU_SPEED::TWO_FIVE_H_kHz);
 }
 
 // the loop function runs over and over again forever
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(20);                       // wait for a second
+  delay(6);                       // wait for a second
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(2000);                       // wait for a second
-
-  
+  delay(500);                       // wait for a second
 }
